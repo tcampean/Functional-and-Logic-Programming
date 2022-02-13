@@ -1,5 +1,5 @@
-# Logical and Functional Programming
-Various scripts operating with lists and atoms
+# Functional and Logic Programming
+Various scripts operating with lists and atoms, backtracking
 
 **Learned**
 * Basic concepts of Lisp & Prolog 
