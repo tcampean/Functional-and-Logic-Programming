@@ -1,0 +1,18 @@
+;convert2to1(a - LIST)
+;NIL, if a is NULL
+;a1 U 2 U convert2to1(a2) U convert2to1(a3), if length(a) = 3
+;a1 U 1 U convert2to1(a2), if length(a) = 2
+;a1 U 0, if length(a) = 1
+;flow(i)
+
+(defun convert2to1(a)
+    (cond
+        ((null a) nil)
+        ((= (betterlength a) 3) (betterappend(list(car a)) (betterappend(list 2) (betterappend(convert2to1(cadr a))(convert2to1(caddr a))))))
+        ((= (betterlength a) 2) (betterappend(list(car a)) (betterappend (list 1) (convert2to1(cadr a)))))
+        (t (betterappend (list(car a)) (list 0)))
+    )
+)
+
+(princ "Conversion of (A (B) (C (D (F)) (E))) to type (1): ")
+(write (convert2to1 `(A (B) (C (D (F)) (E)))))

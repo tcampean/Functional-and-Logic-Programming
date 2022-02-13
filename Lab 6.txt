@@ -1,0 +1,14 @@
+;listdepth(a - LIST, depth - NUMBER) = 
+;depth, if a is an atom
+;max(listdepth(ai,depth+1)), with i from 1 to n,otherwise
+;flow(i,i)
+
+
+(defun listdepth(a depth)
+    (cond
+    ((atom a) depth)
+    (t (apply 'max (mapcar #'(lambda (b) (listdepth b (+ depth 1)))a)))
+    )
+)
+
+(write (listdepth `(1 4 5 2 4 (2 3 ((23 3 (2 5 6)) 3))) -1))

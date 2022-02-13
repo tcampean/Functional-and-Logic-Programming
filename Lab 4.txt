@@ -1,0 +1,171 @@
+;vectorproduct(a - LIST, b - LIST) =
+; 0, if a is NULl OR b is NULL
+; a1*b1 + vectorproduct(a2a3..an,b2b3...bn), otherwise
+; flow(i,i)
+
+(defun vectorproduct(a b)
+    (cond
+        ((null a) 0)
+        ((null b) 0)
+        (t (+ ( * (car a) ( car b)) (vectorproduct (cdr a) (cdr b))))
+    )
+)
+
+(defun wrapper(a b)
+    (cond
+    ((not (= (length a) (length b))) (write "Invalid length"))
+    (t(vectorproduct a b))
+    )
+)
+
+(princ "Product of (2 2 7) & (1 1 2): ")
+(write (wrapper `(2 2 7) `(1 1 2)))
+(format t "~%")
+(format t "~%")
+
+;bettermax(a,b)
+;a, if a > b
+;b, otherwise
+;flow(i,i)
+
+(defun bettermax(a b)
+    (cond
+    ((> a b) a)
+    (t b)
+    )
+)
+
+;listdepth(a - LIST, depth - NUMBER)
+;depth, if a is NULL
+;max(listdepth(a1,depth+1),listdepth(a2a3...an,depth)), if a1 is a list
+;listdepth(a2a3...an,depth), otherwise
+;flow(i,i)
+
+(defun listdepth(a depth)
+    (cond
+        ((null a) depth)
+        ((listp (car a)) (bettermax(listdepth (car a) (+ 1 depth)) (listdepth (cdr a) depth)))
+        (t (listdepth (cdr a) depth))
+    )
+
+)
+
+(princ "Depth of list (1 6 (2 4 (3 3 (4)) 5)) 1): ")
+(write (listdepth `(1 6 (2 4 (3 3 (4)) 5)) 1))
+(format t "~%")
+(format t "~%")
+
+
+;insertion(a -LIST , r - ELEM)
+;list(r), if a is NULL
+;(a1a2..an), if a1 = r
+;r U (a1a2...an), if r < a1
+;a1 U insertion(a1a2..an,r), otherwise
+;flow(i,i)
+
+(defun insertion(a r)
+    (cond
+        ((null a) (list r))
+        ((equal (car a) r) a)
+        ((< r (car a)) (cons r a))
+        (t (cons (car a) (insertion (cdr a) r)))
+    )
+)
+
+;sorting(a - LIST)
+;NIL, if a is NULL
+;insertion(sorting(a2a3...an),a1),otherwise
+;flow(i)
+
+(defun sorting(a)
+    (cond
+        ((null a) nil)
+        (t (insertion (sorting (cdr a)) (car a)))
+    )
+)
+
+(princ "Sorting (1 4 4 4 3 3 3 3 2 7 8) with no duplicates: ")
+(write (sorting `(1 4 4 4 3 3 3 3 2 7 8)))
+(format t "~%")
+(format t "~%")
+
+;bettermember(elem - ELEM, a - LIST)
+;nil, if a is NULL
+;a, if a1 = elem
+;bettermember(elem, a2a3..an), otherwise
+
+(defun bettermember(elem a)
+    (cond
+    ((null a) nil)
+    ((equal elem (car a)) a)
+    (t(bettermember elem (cdr a)))
+    )
+)
+
+;setintersection(a - LIST, b - LIST)
+;NIL, if a is NULL or b is NULL
+;a1 U setintersection(a2a3..an,b1b2...bn), if a1 C b
+;setintersection(a2a3...an,b1b2..bn), otherwise
+;flow(i,i)
+
+
+
+(defun setintersection (a b)
+    (cond
+        ((null a) nil)
+        ((null b) nil)
+        ((bettermember (car a) b) (cons (car a) (setintersection (cdr a) b)))
+        (t (setintersection(cdr a) b))
+    
+    )
+)
+
+(princ "Intersection set of (5 6 8 9 2 7) & (5 2 3 9 7 4): " )
+(write (setintersection `(5 6 8 9 2 7) `(5 2 3 9 7 4)))
+(format t "~%")
+(format t "~%")
+
+;betterappend(a - LIST, b - LIST)
+; b, if a is NULL
+; a1 U betterappend(a2a3..an,b), otherwise
+;flow(i)
+
+(defun betterappend(a b)
+    (cond
+    ((null a) b)
+    (t(cons (car a) (betterappend (cdr a) b)))
+    )
+)
+
+;betterlength(a - LIST)
+;0, if a is NULL
+;1+betterlength(a2a3..an),otherwise
+
+(defun betterlength(a)
+    (cond
+    ((null a) 0)
+    (t(+ 1 (betterlength(cdr a))))
+    )
+)
+
+;convert2to1(a - LIST)
+;NIL, if a is NULL
+;a1 U 2 U convert2to1(a2) U convert2to1(a3), if length(a) = 3
+;a1 U 1 U convert2to1(a2), if length(a) = 2
+;a1 U 0, if length(a) = 1
+;flow(i)
+
+(defun convert2to1(a)
+    (cond
+        ((null a) nil)
+        ((= (betterlength a) 3) (betterappend(list(car a)) (betterappend(list 2) (betterappend(convert2to1(cadr a))(convert2to1(caddr a))))))
+        ((= (betterlength a) 2) (betterappend(list(car a)) (betterappend (list 1) (convert2to1(cadr a)))))
+        (t (betterappend (list(car a)) (list 0)))
+    )
+)
+
+(princ "Conversion of (A (B) (C (D (F)) (E))) to type (1): ")
+(write (convert2to1 `(A (B) (C (D (F)) (E)))))
+
+
+
